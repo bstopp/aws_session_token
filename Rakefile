@@ -1,50 +1,74 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 require 'rubygems'
 require 'bundler'
+
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
   $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
+  $stderr.puts 'Run `bundle install` to install missing gems'
   exit e.status_code
 end
 require 'rake'
 
 require 'semver'
-
 def s_version
-  SemVer.find.format "%M.%m.%p%s"
+  SemVer.find.format '%M.%m.%p%s'
 end
+
 require 'juwelier'
 Juwelier::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://guides.rubygems.org/specification-reference/ for more options
-  gem.name = "tf_sesn_token"
-  gem.homepage = "http://github.com/bstopp/tf_sesn_token"
-  gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "bryan.stopp@gmail.com"
-  gem.authors = ["Bryan Stopp"]
+  gem.name = 'aws_sesn_token'
+  gem.homepage = 'http://github.com/bstopp/aws_sesn_token'
+  gem.license = 'MIT'
+  gem.summary = 'Create & Store AWS Session Tokens'
+  gem.description = <<~DESC
+    Tool to wrap AWS API to create and store Session tokens so that other commands/tools (e.g. Terraform) can function as necessary.
+  DESC
+  gem.email = 'bryan.stopp@gmail.com'
+  gem.authors = ['Bryan Stopp']
   gem.version = s_version
   gem.required_ruby_version = '>= 2.0'
 
   # dependencies defined in Gemfile
 end
+
 Juwelier::RubygemsDotOrgTasks.new
+
 require 'rspec/core'
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-desc "Code coverage detail"
+desc 'Code coverage detail'
 task :simplecov do
-  ENV['COVERAGE'] = "true"
+  ENV['COVERAGE'] = 'true'
   Rake::Task['spec'].execute
+end
+
+task :headers do
+  require 'rubygems'
+  require 'copyright_header'
+
+  args = {
+      :license => 'ASL2',
+      :copyright_software => 'AWS Session Token Gem',
+      :copyright_software_description => 'Tool to wrap AWS API to create and store Session tokens so that other commands/tools (e.g. Terraform) can function as necessary.',
+      :copyright_holders => ['Bryan Stopp <bryan.stopp@gmail.com>'],
+      :copyright_years => ['2018'],
+      :add_path => 'lib:bin',
+      :output_dir => '.'
+  }
+
+  command_line = CopyrightHeader::CommandLine.new( args )
+  command_line.execute
 end
 
 task :default => :spec
 
 require 'yard'
 YARD::Rake::YardocTask.new
+

@@ -1,8 +1,9 @@
-tf_sesn_token===================
+aws_sesn_token
+===================
 
 Description goes here.
 
-Contributing to tf_sesn_token
+Contributing to aws_sesn_token
 ------------------------------------------
 
 -   Check out the latest master to make sure the feature hasn't been

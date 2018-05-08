@@ -1,0 +1,30 @@
+
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    - '*.gemspec'
+
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+
+Metrics/BlockLength:
+  CountComments: false  # count full line comments?
+  Max: 25
+  Exclude:
+    - 'Rakefile'
+    - 'spec/**/*.rb'
+
+Metrics/LineLength:
+  Max: 120
+
+
+Style/FormatStringToken:
+  Enabled: false
+
+
