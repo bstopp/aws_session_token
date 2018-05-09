@@ -1,0 +1,79 @@
+#
+# AWS Session Token Gem - Tool to wrap AWS API to create and store Session tokens
+# so that other commands/tools (e.g. Terraform) can function as necessary.
+#
+# Copyright 2018 Bryan Stopp <bryan.stopp@gmail.com>
+#
+# Licensed under the Apache License, Version 2.0 (the 'License');
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an 'AS IS' BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+module AwsSessionToken
+
+  class Options
+
+    SESSION_PROFILE = 'session_profile'
+    DURATION = 3600
+
+    attr_accessor :credentials_file, :duration, :profile, :session_profile
+
+    def initialize
+      creds = Aws::SharedCredentials.new
+      self.credentials_file = creds.path
+      self.profile = creds.profile_name
+      self.session_profile = SESSION_PROFILE
+      self.duration = DURATION
+    end
+
+    def parse(args)
+      define_options.parse!(args)
+    end
+
+    private
+
+    def define_options
+      opts = OptionParser.new
+      opts.banner = 'Usage: aws_sesson_token [options]'
+      opts.separator('')
+
+      # Additional options
+      opts.on('-f', '--file [FILE]', 'Specify a custom credentials file.') do |f|
+        self.credentials_file = f
+      end
+      opts.on('-p', '--profile [PROFILE]',
+              'Specify the AWS credentials profile to use.') do |p|
+        self.profile = p
+      end
+      opts.on('-s', '--session-profile [SESSION_PROFILE]',
+              'Specify the name of the profile used to store the session credentials.') do |s|
+        self.session_profile = s
+      end
+      opts.on('-d', '--duration [DURATION]', Integer,
+              'Specify the duration the of the token in seconds. (Default 3600)') do |d|
+        self.duration = d
+      end
+
+      opts.separator('')
+      opts.separator('Common options:')
+      opts.on_tail('-h', '--help', 'Show this message.') do
+        puts opts
+        exit
+      end
+      opts.on_tail('-v', '--version', 'Show version.') do
+        puts SemVer.find.format '%M.%m.%p%s'
+        exit
+      end
+      opts
+    end
+  end
+
+end
