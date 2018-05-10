@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # AWS Session Token Gem - Tool to wrap AWS API to create and store Session tokens
 # so that other commands/tools (e.g. Terraform) can function as necessary.
@@ -15,10 +17,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 module AwsSessionToken
 
+  # Options class to define properties for the command line.
   class Options
 
     SESSION_PROFILE = 'session_profile'
@@ -46,22 +48,43 @@ module AwsSessionToken
       opts.separator('')
 
       # Additional options
+      file_option(opts)
+      profile_option(opts)
+      session_profile_option(opts)
+      duration_option(opts)
+
+      common_options(opts)
+      opts
+    end
+
+    def file_option(opts)
       opts.on('-f', '--file [FILE]', 'Specify a custom credentials file.') do |f|
         self.credentials_file = f
       end
+    end
+
+    def profile_option(opts)
       opts.on('-p', '--profile [PROFILE]',
               'Specify the AWS credentials profile to use.') do |p|
         self.profile = p
       end
+    end
+
+    def session_profile_option(opts)
       opts.on('-s', '--session-profile [SESSION_PROFILE]',
               'Specify the name of the profile used to store the session credentials.') do |s|
         self.session_profile = s
       end
+    end
+
+    def duration_option(opts)
       opts.on('-d', '--duration [DURATION]', Integer,
               'Specify the duration the of the token in seconds. (Default 3600)') do |d|
         self.duration = d
       end
+    end
 
+    def common_options(opts)
       opts.separator('')
       opts.separator('Common options:')
       opts.on_tail('-h', '--help', 'Show this message.') do
@@ -72,8 +95,8 @@ module AwsSessionToken
         puts SemVer.find.format '%M.%m.%p%s'
         exit
       end
-      opts
     end
+
   end
 
 end
