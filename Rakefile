@@ -54,8 +54,8 @@ task :headers do
   require 'copyright_header'
 
   description = <<~DESC
-    Tool to wrap AWS API to create and store Session tokens so that other
-    commands/tools (e.g. Terraform) can function as necessary
+    Tool to wrap AWS API to create and store 
+    Session tokens so that other commands/tools (e.g. Terraform) can function as necessary.
   DESC
 
   args = {
@@ -64,6 +64,7 @@ task :headers do
     copyright_software_description: description,
     copyright_holders: ['Bryan Stopp <bryan.stopp@gmail.com>'],
     copyright_years: ['2018'],
+    syntax: './config/syntax.yaml',
     add_path: 'lib:bin:spec',
     output_dir: '.'
   }

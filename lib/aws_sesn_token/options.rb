@@ -71,7 +71,7 @@ module AwsSessionToken
     end
 
     def session_profile_option(opts)
-      opts.on('-s', '--session-profile [SESSION_PROFILE]',
+      opts.on('-s', '--session [SESSION_PROFILE]',
               'Specify the name of the profile used to store the session credentials.') do |s|
         self.session_profile = s
       end
