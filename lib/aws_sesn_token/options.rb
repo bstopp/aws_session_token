@@ -26,7 +26,7 @@ module AwsSessionToken
     SESSION_PROFILE = 'session_profile'
     DURATION = 3600
 
-    attr_accessor :credentials_file, :duration, :profile, :session_profile
+    attr_accessor :credentials_file, :duration, :profile, :session_profile, :token
 
     def initialize
       creds = Aws::SharedCredentials.new
@@ -38,6 +38,7 @@ module AwsSessionToken
 
     def parse(args)
       define_options.parse!(args)
+      validate
     end
 
     private
@@ -52,35 +53,43 @@ module AwsSessionToken
       profile_option(opts)
       session_profile_option(opts)
       duration_option(opts)
-
+      token_option(opts)
       common_options(opts)
       opts
     end
 
     def file_option(opts)
-      opts.on('-f', '--file [FILE]', 'Specify a custom credentials file.') do |f|
+      opts.on('-f', '--file FILE', 'Specify a custom credentials file.') do |f|
         self.credentials_file = f
       end
     end
 
     def profile_option(opts)
-      opts.on('-p', '--profile [PROFILE]',
+      opts.on('-p', '--profile PROFILE',
               'Specify the AWS credentials profile to use.') do |p|
         self.profile = p
       end
     end
 
     def session_profile_option(opts)
-      opts.on('-s', '--session [SESSION_PROFILE]',
+      opts.on('-s', '--session SESSION_PROFILE',
               'Specify the name of the profile used to store the session credentials.') do |s|
         self.session_profile = s
       end
     end
 
     def duration_option(opts)
-      opts.on('-d', '--duration [DURATION]', Integer,
+      opts.on('-d', '--duration DURATION', Integer,
               'Specify the duration the of the token in seconds. (Default 3600)') do |d|
         self.duration = d
+      end
+    end
+
+    def token_option(opts)
+      opts.on('-t', '--token TOKEN', Integer,
+              'Specify the OTP Token to use for creating the session credentials.') do |t|
+        puts "T = #{t}"
+        self.token = t
       end
     end
 
@@ -92,11 +101,18 @@ module AwsSessionToken
         exit
       end
       opts.on_tail('-v', '--version', 'Show version.') do
-        puts SemVer.find.format '%M.%m.%p%s'
+        puts SemVer.find.format(+ '%M.%m.%p%s')
         exit
       end
     end
 
+    def validate
+      validate_profiles
+    end
+
+    def validate_profiles
+      raise ArgumentError, 'Profile and Session Profile must be different.' if profile == session_profile
+    end
   end
 
 end

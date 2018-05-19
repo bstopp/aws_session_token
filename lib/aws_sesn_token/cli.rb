@@ -23,28 +23,48 @@ module AwsSessionToken
 
   # Execute the process for getting & updating the session token.
   class CLI
+    attr_accessor :options
 
-    def run
+    def initialize
       @options = Options.new
-      @options.parse(ARGV)
-      update_creds
-      mfa = mfa_device
-      token = token_prompt
-      @user = session_token(mfa, token)
+      @creds_file = CredentialsFile.new
     end
 
-    def update_creds
+    def run
+      @options.parse(ARGV)
+      validate_creds_file
+      set_aws_creds
+      mfa = mfa_device
+      token = @options.token || token_prompt
+      creds = session_token(mfa, token)
+      @creds_file.write(@options.credentials_file, @options.session_profile, creds)
+    end
+
+    def validate_creds_file
+      return if File.exist?(@options.credentials_file) && File.writable?(@options.credentials_file)
+      unless File.exist?(@options.credentials_file)
+        raise(
+          ArgumentError, "Specified credentials file is missing: #{@options.credentials_file}"
+        )
+      end
+      raise(
+        ArgumentError,
+        "Specified credentials file cannot be modified by current user: #{@options.credentials_file}"
+      )
+    end
+
+    def set_aws_creds
       credentials = Aws::SharedCredentials.new(path: @options.credentials_file, profile_name: @options.profile)
       Aws.config.update(credentials: credentials)
     rescue Aws::Errors::NoSuchProfileError
       warn "\nSpecified AWS Profile doesn't exist: #{@options.profile}"
-      exit
+      exit 1
     end
 
     def mfa_device
       iam_client = Aws::IAM::Client.new
       list = iam_client.list_mfa_devices(max_items: 1)
-      return list[0].serial_number unless list.nil || list.empty?
+      return list[0].serial_number unless list.nil? || list.empty?
       warn "\nSpecified profile/user doesn't have MFA device."
       warn "\nScript execution unnecessary."
       exit
@@ -57,13 +77,13 @@ module AwsSessionToken
 
     def session_token(mfa_device, otp)
       @sts_client = Aws::STS::Client.new
-      @sts_client.get_session_token(duration_secionds: @options.duration,
-                                    serial_number: mfa_device,
-                                    token_code: otp)
+      resp = @sts_client.get_session_token(
+        duration_seconds: @options.duration,
+        serial_number: mfa_device,
+        token_code: otp
+      )
+      resp.credentials
     end
 
-    def write_creds
-      # Write the creds to the file
-    end
   end
 end

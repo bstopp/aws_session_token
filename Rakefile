@@ -54,7 +54,7 @@ task :headers do
   require 'copyright_header'
 
   description = <<~DESC
-    Tool to wrap AWS API to create and store 
+    Tool to wrap AWS API to create and store
     Session tokens so that other commands/tools (e.g. Terraform) can function as necessary.
   DESC
 
@@ -75,6 +75,9 @@ end
 
 require 'yard'
 YARD::Rake::YardocTask.new
+
+require 'rake/clean'
+CLEAN.include('coverage')
 
 require 'rubocop/rake_task'
 RuboCop::RakeTask.new
