@@ -1,4 +1,18 @@
+---
 language: ruby
 rvm:
-  - 2.3
-  - 2.4
+- 2.3
+- 2.4
+
+before_script:
+- echo "[default]\nregion = us-east-1" > ~/.aws/config
+
+deploy:
+  provider: rubygems
+  api_key:
+    secure: ZSU5vCzUz5zHuA+lCqXBI9Zc29J9diHiEvtpsB94HE6i7VF9R2F6SoOzijbovbI/nM95bWyng+1Hjl06WUUXub840ks8LWUlGzs/Q82IbZ87IAeg35fFVE9G60MEs8Dqzuamaf8BPCRRS7KTCOylz0UMe8RjQ8jsag+AAssm4U0/RO4YNGRnAEadjGAJ5aTiYqoDsMMOeOllaOKcO+HMjBt4zdYlrU8oo5A9HUxzcYmxTwpMPaMnaeR/I66BoQI2EKA2kVsxYsQX0TyDwx2jf8Bxsrkg9R5kcBb2/nOGZmtjq+RSY19SNYUNt71ER/Pwd3nwoE/0JKWzvqKXBK2+/TQoZZkgSyYJThG4Flnt/N6sollv8F9UneJOON7WV71tLRY80QuVZPqbkulMjHGKXpKUi37T05Xwd0i/vfODNb+b6s4p8vrJjMQvKxNb2O4Kal3Po8iIZardpcQBxcLufO2FicbnaG5OWqMbN4cj61Zsok4A6HcSYzB/mZ/BKRliDnZ9BQcjBU15ilKuSeR30LCRv4eDmu1fI0GN1usi4fkRmjDhjR/N6fkOLr59kFXj4djyXPoZhOrcvKmRC1c5UuWffsUFuy6n8rQYKgr/hgp0qqhq5g2UNhWdxlRs8uPC8ZLxKicXxXrNSZPzoPcltmybstfOXMReFj6KFkQFApQ=
+  gem: aws_session_token
+  on:
+    tags: true
+    repo: bstopp/aws_session_token
+...
