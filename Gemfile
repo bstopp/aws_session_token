@@ -15,10 +15,10 @@ gem 'semver2',              '~> 3'
 group :development do
   gem 'bundler',            '~> 1.0',   require: false
   gem 'copyright-header',   '~> 1.0',   require: false
-  gem 'juwelier',           '~> 2.1.0', require: false
+  gem 'juwelier',           '~> 2.1',   require: false
   gem 'rdoc',               '~> 3.12',  require: false
   gem 'rubocop',            '~> 0.55',  require: false
-  gem 'simplecov',          '>= 0',     require: false
+  gem 'simplecov',          '~> 0',     require: false
   gem 'yard',               '~> 0.7',   require: false
 end
 

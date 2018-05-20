@@ -127,16 +127,29 @@ describe AwsSessionToken::CLI do
       mfa
     end
 
-    it 'should work' do
+    it 'should work without user' do
+      params = { max_items: 1 }
       client = double('iam_client')
+      response = Aws::IAM::Types::ListMFADevicesResponse.new(mfa_devices: [mfa_device])
       expect(Aws::IAM::Client).to receive(:new).and_return(client)
-      expect(client).to receive(:list_mfa_devices).and_return([mfa_device])
+      expect(client).to receive(:list_mfa_devices).with(params).and_return(response)
+      expect(cli.mfa_device).to eq('serial-number')
+    end
+    it 'should work with user' do
+      cli.options.user = 'foo'
+      params = { user_name: 'foo', max_items: 1 }
+      client = double('iam_client')
+      response = Aws::IAM::Types::ListMFADevicesResponse.new(mfa_devices: [mfa_device])
+      expect(Aws::IAM::Client).to receive(:new).and_return(client)
+      expect(client).to receive(:list_mfa_devices).with(params).and_return(response)
       expect(cli.mfa_device).to eq('serial-number')
     end
     it 'should exit if no MFA devices' do
+
       client = double('iam_client')
+      response = Aws::IAM::Types::ListMFADevicesResponse.new(mfa_devices: [])
       expect(Aws::IAM::Client).to receive(:new).and_return(client)
-      expect(client).to receive(:list_mfa_devices).and_return([])
+      expect(client).to receive(:list_mfa_devices).and_return(response)
       begin
         expect { cli.mfa_device }.to exit_with_code(0)
       rescue SystemExit # rubocop:disable Lint/HandleExceptions
@@ -158,11 +171,6 @@ describe AwsSessionToken::CLI do
   end
 
   describe 'session_token' do
-    before do
-      $stdout = STDOUT
-      $stderr = STDERR
-    end
-
     let(:response) do
       creds = Aws::STS::Types::Credentials.new
       creds.access_key_id = 'access_key_id'

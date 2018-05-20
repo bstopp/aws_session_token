@@ -26,7 +26,7 @@ module AwsSessionToken
     SESSION_PROFILE = 'session_profile'
     DURATION = 3600
 
-    attr_accessor :credentials_file, :duration, :profile, :session_profile, :token
+    attr_accessor :credentials_file, :duration, :profile, :profile_provided, :session_profile, :token, :user
 
     def initialize
       creds = Aws::SharedCredentials.new
@@ -34,6 +34,7 @@ module AwsSessionToken
       self.profile = creds.profile_name
       self.session_profile = SESSION_PROFILE
       self.duration = DURATION
+      self.profile_provided = false
     end
 
     def parse(args)
@@ -50,6 +51,7 @@ module AwsSessionToken
 
       # Additional options
       file_option(opts)
+      user_option(opts)
       profile_option(opts)
       session_profile_option(opts)
       duration_option(opts)
@@ -64,10 +66,18 @@ module AwsSessionToken
       end
     end
 
+    def user_option(opts)
+      opts.on('-u', '--user USER',
+              'Specify the AWS User name for passing to API.') do |u|
+        self.user = u
+      end
+    end
+
     def profile_option(opts)
       opts.on('-p', '--profile PROFILE',
-              'Specify the AWS credentials profile to use.') do |p|
+              'Specify the AWS credentials profile to use. Also sets user, if user is not provided.') do |p|
         self.profile = p
+        self.profile_provided = true
       end
     end
 
@@ -88,7 +98,6 @@ module AwsSessionToken
     def token_option(opts)
       opts.on('-t', '--token TOKEN', Integer,
               'Specify the OTP Token to use for creating the session credentials.') do |t|
-        puts "T = #{t}"
         self.token = t
       end
     end
@@ -112,6 +121,7 @@ module AwsSessionToken
 
     def validate_profiles
       raise ArgumentError, 'Profile and Session Profile must be different.' if profile == session_profile
+      self.user ||= profile if profile_provided
     end
   end
 

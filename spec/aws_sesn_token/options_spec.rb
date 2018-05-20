@@ -72,7 +72,8 @@ describe AwsSessionToken::Options, :isolated_environment do
           Usage: aws_sesson_token [options]
 
               -f, --file FILE                  Specify a custom credentials file.
-              -p, --profile PROFILE            Specify the AWS credentials profile to use.
+              -u, --user USER                  Specify the AWS User name for passing to API.
+              -p, --profile PROFILE            Specify the AWS credentials profile to use. Also sets user, if user is not provided.
               -s, --session SESSION_PROFILE    Specify the name of the profile used to store the session credentials.
               -d, --duration DURATION          Specify the duration the of the token in seconds. (Default 3600)
               -t, --token TOKEN                Specify the OTP Token to use for creating the session credentials.
@@ -122,6 +123,17 @@ describe AwsSessionToken::Options, :isolated_environment do
       end
     end
 
+    describe '-u/--user' do
+      it 'fails if no argument' do
+        expect { options.parse(['-u']) }.to raise_error(OptionParser::MissingArgument)
+        expect { options.parse(['--user']) }.to raise_error(OptionParser::MissingArgument)
+      end
+      it 'succeeds with an argument' do
+        expect { options.parse(%w[-u foo]) }.to_not raise_error(OptionParser::MissingArgument)
+        expect { options.parse(%w[--user foo]) }.to_not raise_error(OptionParser::MissingArgument)
+      end
+    end
+
     describe '-s/--session' do
       it 'fails if no argument' do
         expect { options.parse(['-s']) }.to raise_error(OptionParser::MissingArgument)
@@ -162,6 +174,10 @@ describe AwsSessionToken::Options, :isolated_environment do
     describe 'validate' do
       it 'does not allow -p & -s' do
         expect { options.parse(%w[-p default -s default]) }.to raise_error(ArgumentError)
+      end
+      it 'defaults profile attr to user if unspecified' do
+        options.parse(%w[-p foo])
+        expect(options.profile).to eq(options.user)
       end
     end
   end

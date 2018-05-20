@@ -63,7 +63,10 @@ module AwsSessionToken
 
     def mfa_device
       iam_client = Aws::IAM::Client.new
-      list = iam_client.list_mfa_devices(max_items: 1)
+      params = { max_items: 1 }
+      params[:user_name] = @options.user if @options.user
+      response = iam_client.list_mfa_devices(params)
+      list = response.mfa_devices
       return list[0].serial_number unless list.nil? || list.empty?
       warn "\nSpecified profile/user doesn't have MFA device."
       warn "\nScript execution unnecessary."

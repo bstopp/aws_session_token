@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'bundler'
+require 'rake/clean'
 
 begin
   Bundler.setup(:default, :development)
@@ -22,7 +23,7 @@ Juwelier::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://guides.rubygems.org/specification-reference/ for more options
   gem.name = 'aws_sesn_token'
   gem.homepage = 'http://github.com/bstopp/aws_sesn_token'
-  gem.license = 'Apache2'
+  gem.license = 'Apache-2.0'
   gem.summary = 'Create & Store AWS Session Tokens'
   gem.description = <<~DESC
     Tool to wrap AWS API to create and store Session tokens so that other commands/tools (e.g. Terraform) can function as necessary.
@@ -34,6 +35,8 @@ Juwelier::Tasks.new do |gem|
 
   # dependencies defined in Gemfile
 end
+CLOBBER.include('aws_sesn_token.gemspec')
+CLOBBER.include('pkg')
 
 Juwelier::RubygemsDotOrgTasks.new
 
@@ -48,6 +51,7 @@ task :simplecov do
   ENV['COVERAGE'] = 'true'
   Rake::Task['spec'].execute
 end
+CLOBBER.include('coverage')
 
 task :headers do
   require 'rubygems'
@@ -75,9 +79,6 @@ end
 
 require 'yard'
 YARD::Rake::YardocTask.new
-
-require 'rake/clean'
-CLEAN.include('coverage')
 
 require 'rubocop/rake_task'
 RuboCop::RakeTask.new

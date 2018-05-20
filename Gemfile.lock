@@ -663,12 +663,12 @@ DEPENDENCIES
   bundler (~> 1.0)
   copyright-header (~> 1.0)
   highline (~> 1.7)
-  juwelier (~> 2.1.0)
+  juwelier (~> 2.1)
   rdoc (~> 3.12)
   rspec (~> 3.5.0)
   rubocop (~> 0.55)
   semver2 (~> 3)
-  simplecov
+  simplecov (~> 0)
   yard (~> 0.7)
 
 BUNDLED WITH
