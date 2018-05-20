@@ -5,6 +5,7 @@ rvm:
 - 2.4
 
 before_script:
+- mkdir -p ~/.aws
 - echo "[default]" >> ~/.aws/config
 - echo "region = us-east-1" >> ~/.aws/config
 - echo "" >> ~/.aws/config
