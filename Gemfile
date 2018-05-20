@@ -6,9 +6,10 @@ source 'https://rubygems.org'
 # Example:
 #   gem 'activesupport', '>= 2.3.5'
 
-gem 'aws-sdk',              '~> 3'
-gem 'highline',             '~> 1.7'
-gem 'semver2',              '~> 3'
+gem 'aws-sdk-core', '~> 3.21'
+gem 'aws-sdk-iam',  '~> 1.4'
+gem 'highline',     '~> 1.7'
+gem 'semver2',      '~> 3'
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
