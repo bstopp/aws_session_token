@@ -1,15 +1,27 @@
 ---
+env:
+  global:
+    CC_TEST_REPORTER_ID=73a3cbcec3a07ce0f658cd9a1a4096dddcf59491e8480943413d021983562fee
+    COVERAGE=true
 language: ruby
 rvm:
-- 2.3
-- 2.4
+  - 2.3
+  - 2.4
 
 before_script:
-- mkdir -p ~/.aws
-- echo "[default]" >> ~/.aws/config
-- echo "region = us-east-1" >> ~/.aws/config
-- echo "" >> ~/.aws/config
-- touch ~/.aws/credentials
+  - mkdir -p ~/.aws
+  - echo "[default]" >> ~/.aws/config
+  - echo "region = us-east-1" >> ~/.aws/config
+  - echo "" >> ~/.aws/config
+  - touch ~/.aws/credentials
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+after_script:
+  - ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json # Format backend coverage
+  - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter upload-coverage; fi  # Upload coverage/codeclimate.json
+
 
 deploy:
   provider: rubygems
