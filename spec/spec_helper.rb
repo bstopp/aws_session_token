@@ -41,7 +41,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'rspec'
-require 'aws_sesn_token'
+require 'aws_session_token'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.

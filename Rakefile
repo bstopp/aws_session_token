@@ -21,8 +21,8 @@ end
 require 'juwelier'
 Juwelier::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://guides.rubygems.org/specification-reference/ for more options
-  gem.name = 'aws_sesn_token'
-  gem.homepage = 'http://github.com/bstopp/aws_sesn_token'
+  gem.name = 'aws_session_token'
+  gem.homepage = 'http://github.com/bstopp/aws_session_token'
   gem.license = 'Apache-2.0'
   gem.summary = 'Create & Store AWS Session Tokens'
   gem.description = <<~DESC
@@ -35,7 +35,7 @@ Juwelier::Tasks.new do |gem|
 
   # dependencies defined in Gemfile
 end
-CLOBBER.include('aws_sesn_token.gemspec')
+CLOBBER.include('aws_session_token.gemspec')
 CLOBBER.include('pkg')
 
 Juwelier::RubygemsDotOrgTasks.new

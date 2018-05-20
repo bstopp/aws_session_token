@@ -1,9 +1,11 @@
-aws_sesn_token
+[![Gem Version](https://badge.fury.io/rb/aws_session_token.svg)](https://badge.fury.io/rb/aws_session_token)
+
+aws_session_token
 ===================
 
 Description goes here.
 
-Contributing to aws_sesn_token
+Contributing to aws_session_token
 ------------------------------------------
 
 -   Check out the latest master to make sure the feature hasn't been
