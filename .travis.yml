@@ -19,8 +19,7 @@ before_script:
   - ./cc-test-reporter before-build
 
 after_script:
-  - ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json # Format backend coverage
-  - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter upload-coverage; fi  # Upload coverage/codeclimate.json
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 
 deploy:
