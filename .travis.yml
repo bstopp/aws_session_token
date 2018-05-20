@@ -5,7 +5,9 @@ rvm:
 - 2.4
 
 before_script:
-- echo "[default]\nregion = us-east-1" > ~/.aws/config
+- echo "[default]" >> ~/.aws/config
+- echo "region = us-east-1" >> ~/.aws/config
+- echo "" >> ~/.aws/config
 
 deploy:
   provider: rubygems
