@@ -20,7 +20,7 @@
 #
 
 require 'spec_helper'
-require 'aws_sesn_token/credentials_file'
+require 'aws_session_token/credentials_file'
 
 describe AwsSessionToken::CLI do
 

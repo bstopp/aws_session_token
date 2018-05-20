@@ -3,7 +3,7 @@
 
 $LOAD_PATH.unshift("#{__dir__}/../lib")
 
-require 'aws_sesn_token'
+require 'aws_session_token'
 
 cli = AwsSessionToken::CLI.new
 cli.run
