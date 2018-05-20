@@ -46,7 +46,7 @@ module AwsSessionToken
 
     def define_options
       opts = OptionParser.new
-      opts.banner = 'Usage: aws_sesson_token [options]'
+      opts.banner = 'Usage: aws_session_token [options]'
       opts.separator('')
 
       # Additional options

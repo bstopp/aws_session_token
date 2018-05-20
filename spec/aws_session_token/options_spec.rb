@@ -69,7 +69,7 @@ describe AwsSessionToken::Options, :isolated_environment do
         end
 
         expected = <<~HELP
-          Usage: aws_sesson_token [options]
+          Usage: aws_session_token [options]
 
               -f, --file FILE                  Specify a custom credentials file.
               -u, --user USER                  Specify the AWS User name for passing to API.
