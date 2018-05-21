@@ -185,11 +185,11 @@ describe AwsSessionToken::CLI do
 
     it 'should work' do
       device = 'device'
-      token = 'token'
+      token = 123_456
       client = double('sts-client')
       expect(Aws::STS::Client).to receive(:new).and_return(client)
       expect(client).to receive(:get_session_token).with(
-        duration_seconds: 3600, serial_number: device, token_code: token
+        duration_seconds: 3600, serial_number: device, token_code: token.to_s
       ).and_return(response)
       expect(cli.session_token(device, token)).to eq(response.credentials)
     end

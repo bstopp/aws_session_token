@@ -83,7 +83,7 @@ module AwsSessionToken
       resp = @sts_client.get_session_token(
         duration_seconds: @options.duration,
         serial_number: mfa_device,
-        token_code: otp
+        token_code: otp.to_s
       )
       resp.credentials
     end
