@@ -96,7 +96,7 @@ module AwsSessionToken
     end
 
     def token_option(opts)
-      opts.on('-t', '--token TOKEN', Integer,
+      opts.on('-t', '--token TOKEN',
               'Specify the OTP Token to use for creating the session credentials.') do |t|
         self.token = t
       end

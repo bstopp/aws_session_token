@@ -47,7 +47,7 @@ describe AwsSessionToken::CLI do
 
   let(:mfa_arn) { 'Fake Serial Number' }
 
-  let(:mfa_token) { 123_456 }
+  let(:mfa_token) { '123456' }
 
   describe 'run' do
     it 'should work' do
