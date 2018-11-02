@@ -28,6 +28,7 @@ module AwsSessionToken
     def initialize
       @options = Options.new
       @creds_file = CredentialsFile.new
+      @console = Console.new
     end
 
     def run
@@ -37,7 +38,8 @@ module AwsSessionToken
       mfa = mfa_device
       token = @options.token || token_prompt
       creds = session_token(mfa, token)
-      @creds_file.write(@options.credentials_file, @options.session_profile, creds)
+      @creds_file.write(@options.credentials_file, @options.session_profile, creds) if @options.session_profile
+      @console.write(creds) if @options.console
     end
 
     def validate_creds_file

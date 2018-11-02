@@ -50,6 +50,10 @@ describe AwsSessionToken::CLI do
   let(:mfa_token) { '123456' }
 
   describe 'run' do
+    before do
+      ARGV.clear
+      ARGV << '-s'
+    end
     it 'should work' do
       expect(cli).to receive(:set_aws_creds)
       expect(cli).to receive(:mfa_device).and_return(mfa_arn)

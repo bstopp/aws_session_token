@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 #
-# AWS Session Token Gem - Tool to wrap AWS API to create and store Session tokens
-# so that other commands/tools (e.g. Terraform) can function as necessary.
+# AWS Session Token Gem - Tool to wrap AWS API to create and store
+# Session tokens so that other commands/tools (e.g. Terraform) can function as
+# necessary.
+#
 #
 # Copyright 2018 Bryan Stopp <bryan.stopp@gmail.com>
 #
@@ -19,12 +21,15 @@
 # limitations under the License.
 #
 
-require 'aws-sdk-core'
-require 'aws-sdk-iam'
-require 'semver'
-require 'highline'
+module AwsSessionToken
 
-require_relative 'aws_session_token/cli'
-require_relative 'aws_session_token/console'
-require_relative 'aws_session_token/credentials_file'
-require_relative 'aws_session_token/options'
+  # Helper class for outputting creds to console in export variable format.
+  class Console
+
+    def write(credentials)
+      $stdout.puts "export AWS_ACCESS_KEY_ID=#{credentials.access_key_id}"
+      $stdout.puts "export AWS_SECRET_ACCESS_KEY=#{credentials.secret_access_key}"
+      $stdout.puts "export AWS_SESSION_TOKEN=#{credentials.session_token}"
+    end
+  end
+end
