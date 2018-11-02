@@ -47,9 +47,6 @@ describe AwsSessionToken::Options, :isolated_environment do
     it 'should default the profile name' do
       expect(options.profile).to eq(demo_creds.profile_name)
     end
-    it 'should default the session_profile name' do
-      expect(options.session_profile).to eq('session_profile')
-    end
     it 'should default the duration' do
       expect(options.duration).to eq(AwsSessionToken::Options::DURATION)
     end
@@ -74,9 +71,10 @@ describe AwsSessionToken::Options, :isolated_environment do
               -f, --file FILE                  Specify a custom credentials file.
               -u, --user USER                  Specify the AWS User name for passing to API.
               -p, --profile PROFILE            Specify the AWS credentials profile to use. Also sets user, if user is not provided.
-              -s, --session SESSION_PROFILE    Specify the name of the profile used to store the session credentials.
+              -s, --session [SESSION_PROFILE]  Specify the name of the profile used to store the session credentials.
+              -c, --console                    Output session information to the console as environment variables available to export.
               -d, --duration DURATION          Specify the duration the of the token in seconds. (Default 3600)
-              -t, --token TOKEN                Specify the OTP Token to use for creating the session credentials.
+              -t, --token [TOKEN]              Specify the OTP Token to use for creating the session credentials.
 
           Common options:
               -h, --help                       Show this message.
@@ -107,8 +105,8 @@ describe AwsSessionToken::Options, :isolated_environment do
         expect { options.parse(['--file']) }.to raise_error(OptionParser::MissingArgument)
       end
       it 'succeeds with an argument' do
-        expect { options.parse(%w[-f /foo/bar]) }.to_not raise_error(OptionParser::MissingArgument)
-        expect { options.parse(%w[--file /foo/bar]) }.to_not raise_error(OptionParser::MissingArgument)
+        expect { options.parse(%w[-f /foo/bar -c]) }.to_not raise_error(OptionParser::MissingArgument)
+        expect { options.parse(%w[--file /foo/bar -c]) }.to_not raise_error(OptionParser::MissingArgument)
       end
     end
 
@@ -118,8 +116,8 @@ describe AwsSessionToken::Options, :isolated_environment do
         expect { options.parse(['--profile']) }.to raise_error(OptionParser::MissingArgument)
       end
       it 'succeeds with an argument' do
-        expect { options.parse(%w[-p foo]) }.to_not raise_error(OptionParser::MissingArgument)
-        expect { options.parse(%w[--profile foo]) }.to_not raise_error(OptionParser::MissingArgument)
+        expect { options.parse(%w[-p foo -c]) }.to_not raise_error(OptionParser::MissingArgument)
+        expect { options.parse(%w[--profile foo -c]) }.to_not raise_error(OptionParser::MissingArgument)
       end
     end
 
@@ -129,15 +127,19 @@ describe AwsSessionToken::Options, :isolated_environment do
         expect { options.parse(['--user']) }.to raise_error(OptionParser::MissingArgument)
       end
       it 'succeeds with an argument' do
-        expect { options.parse(%w[-u foo]) }.to_not raise_error(OptionParser::MissingArgument)
-        expect { options.parse(%w[--user foo]) }.to_not raise_error(OptionParser::MissingArgument)
+        expect { options.parse(%w[-u foo -c]) }.to_not raise_error(OptionParser::MissingArgument)
+        expect { options.parse(%w[--user foo -c]) }.to_not raise_error(OptionParser::MissingArgument)
       end
     end
 
     describe '-s/--session' do
-      it 'fails if no argument' do
-        expect { options.parse(['-s']) }.to raise_error(OptionParser::MissingArgument)
-        expect { options.parse(['--session']) }.to raise_error(OptionParser::MissingArgument)
+      it '-s defaults with no argument' do
+        options.parse(['-s'])
+        expect(options.session_profile).to eq('session_profile')
+      end
+      it '-s defaults with no argument' do
+        options.parse(['--session'])
+        expect(options.session_profile).to eq('session_profile')
       end
       it 'succeeds with an argument' do
         expect { options.parse(%w[-s bar]) }.to_not raise_error(OptionParser::MissingArgument)
@@ -155,19 +157,19 @@ describe AwsSessionToken::Options, :isolated_environment do
         expect { options.parse(%w[--duration abc]) }.to raise_error(OptionParser::InvalidArgument)
       end
       it 'succeeds if argument is an integer' do
-        expect { options.parse(%w[-d 1800]) }.to_not raise_error
-        expect { options.parse(%w[--duration 1800]) }.to_not raise_error
+        expect { options.parse(%w[-d 1800 -c]) }.to_not raise_error
+        expect { options.parse(%w[--duration 1800 -c]) }.to_not raise_error
       end
     end
 
     describe '-t/--token' do
       it 'succeeds with optional argument' do
-        expect { options.parse(['-t']) }.to raise_error(OptionParser::MissingArgument)
-        expect { options.parse(['--token']) }.to raise_error(OptionParser::MissingArgument)
+        expect { options.parse(%w[-t -c]) }.to_not raise_error
+        expect { options.parse(%w[--token -c]) }.to_not raise_error
       end
       it 'succeeds with an argument' do
-        expect { options.parse(%w[-t 123456]) }.to_not raise_error
-        expect { options.parse(%w[--token 123456]) }.to_not raise_error
+        expect { options.parse(%w[-t 123456 -c]) }.to_not raise_error
+        expect { options.parse(%w[--token 123456 -c]) }.to_not raise_error
       end
     end
 
@@ -175,8 +177,12 @@ describe AwsSessionToken::Options, :isolated_environment do
       it 'does not allow -p & -s' do
         expect { options.parse(%w[-p default -s default]) }.to raise_error(ArgumentError)
       end
+      it 'requires either -c or -s' do
+        expect { options.parse(%w[-p default]) }.to raise_error(ArgumentError)
+      end
+
       it 'defaults profile attr to user if unspecified' do
-        options.parse(%w[-p foo])
+        options.parse(%w[-p foo -c])
         expect(options.profile).to eq(options.user)
       end
     end

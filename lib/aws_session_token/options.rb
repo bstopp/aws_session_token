@@ -26,15 +26,15 @@ module AwsSessionToken
     SESSION_PROFILE = 'session_profile'
     DURATION = 3600
 
-    attr_accessor :credentials_file, :duration, :profile, :profile_provided, :session_profile, :token, :user
+    attr_accessor :console, :credentials_file, :duration, :profile, :profile_provided, :session_profile, :token, :user
 
     def initialize
       creds = Aws::SharedCredentials.new
       self.credentials_file = creds.path
       self.profile = creds.profile_name
-      self.session_profile = SESSION_PROFILE
       self.duration = DURATION
       self.profile_provided = false
+      self.console = false
     end
 
     def parse(args)
@@ -54,6 +54,7 @@ module AwsSessionToken
       user_option(opts)
       profile_option(opts)
       session_profile_option(opts)
+      console_option(opts)
       duration_option(opts)
       token_option(opts)
       common_options(opts)
@@ -82,9 +83,16 @@ module AwsSessionToken
     end
 
     def session_profile_option(opts)
-      opts.on('-s', '--session SESSION_PROFILE',
+      opts.on('-s', '--session [SESSION_PROFILE]',
               'Specify the name of the profile used to store the session credentials.') do |s|
-        self.session_profile = s
+        self.session_profile = s || SESSION_PROFILE
+      end
+    end
+
+    def console_option(opts)
+      opts.on('-c', '--console',
+              'Output session information to the console as environment variables available to export.') do
+        self.console = true
       end
     end
 
@@ -96,7 +104,7 @@ module AwsSessionToken
     end
 
     def token_option(opts)
-      opts.on('-t', '--token TOKEN',
+      opts.on('-t', '--token [TOKEN]',
               'Specify the OTP Token to use for creating the session credentials.') do |t|
         self.token = t
       end
@@ -117,11 +125,16 @@ module AwsSessionToken
 
     def validate
       validate_profiles
+      validate_output
     end
 
     def validate_profiles
       raise ArgumentError, 'Profile and Session Profile must be different.' if profile == session_profile
       self.user ||= profile if profile_provided
+    end
+
+    def validate_output
+      raise ArgumentError, 'Either Console or Session Profile is required.' unless console || session_profile
     end
   end
 

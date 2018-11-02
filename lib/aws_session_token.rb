@@ -25,5 +25,6 @@ require 'semver'
 require 'highline'
 
 require_relative 'aws_session_token/cli'
+require_relative 'aws_session_token/console'
 require_relative 'aws_session_token/credentials_file'
 require_relative 'aws_session_token/options'
